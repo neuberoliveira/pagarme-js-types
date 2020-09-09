@@ -620,7 +620,7 @@ declare module 'pagarme' {
     /** Define os dados dos itens vendidos, como nome, preço unitário e quantidade */
     items: ItemInput[];
     /** Você pode passar dados adicionais na criação da transação para facilitar uma futura análise de dados tanto em nossa dashboard, quanto por seus sistemas. Ex: metadata[ idProduto ]=13933139 */
-    metadata?: string;
+    metadata?: any;
     /** Valor único que identifica a transação para permitir uma nova tentativa de requisição com a segurança de que a mesma operação não será executada duas vezes acidentalmente.*/
     reference_key?: string;
     /** Valor único que identifica a sessão do usuário acessando o site. Máximo de 100 caracteres */
