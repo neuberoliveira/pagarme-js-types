@@ -627,6 +627,8 @@ declare module 'pagarme' {
     session?: string;
     /** Data e hora do dispositivo que está efetuando a transação. Deve ser enviado no seguinte formato: yyyy-MM-dd'T'HH:mm:ss'Z. Por exemplo: 2017-10-31T14:53:00.000Z. OBS.: este campo é necessário para transações de mundo físico (com método de captura EMV e Magstripe) */
     local_time?: string;
+    /** Método de pagamento da transação. Aceita dois tipos: credit_card e boleto */
+    payment_method?: string;
   }
 
   export type CreateTransactionInput = CreateTransactionInputBase &

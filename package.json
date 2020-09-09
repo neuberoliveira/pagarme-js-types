@@ -2,7 +2,9 @@
   "name": "pagarme-js-types",
   "description": "📖 A simple typescript definition file for pagarme-js package",
   "version": "0.0.0",
-  "files":["index.d.ts"],
+  "files": [
+    "index.d.ts"
+  ],
   "main": "",
   "types": "index.d.ts",
   "repository": "git@github.com:jonyw4/pagarme-js-types.git",
