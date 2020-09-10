@@ -1167,7 +1167,8 @@ declare module 'pagarme' {
     
   }
   
-  export enum Country {
+  export type Country = string
+  /*{
     Af = 'AF',
     Al = 'AL',
     Dz = 'DZ',
@@ -1411,7 +1412,7 @@ declare module 'pagarme' {
     Ye = 'YE',
     Zm = 'ZM',
     Zw = 'ZW'
-  }
+  }*/
   
   export interface RequestError {
     name: string
