@@ -108,7 +108,7 @@ declare module 'pagarme' {
     namespace cards {
       function all(opts: any, pagination: any): any;
 
-      function create(opts: any, body: any): any;
+      function create(body:CardCreateInput): any;
 
       function find(opts: any, body: any): any;
     }
@@ -200,7 +200,7 @@ declare module 'pagarme' {
     namespace plans {
       function all(opts: any, pagination: any): any;
 
-      function create(opts: any, body: any): any;
+      function create(body: CreatePlanInput): Promise<Plan>;
 
       function find(opts: any, body: any): any;
 
@@ -277,7 +277,7 @@ declare module 'pagarme' {
 
       function cancel(opts: any, body: any): any;
 
-      function create(opts: any, body: any): any;
+      function create(body: CreateSubscriptionInput): Promise<Subscription>;
 
       function createTransaction(opts: any, body: any): any;
 
@@ -460,7 +460,7 @@ declare module 'pagarme' {
 
   export interface Address {
     /** País. Duas letras minúsculas. Deve seguir o padrão `ISO 3166-1 alpha-2` */
-    country: string;
+    country: Country;
     /** Estado */
     state: string;
     /** Cidade */
@@ -635,6 +635,10 @@ declare module 'pagarme' {
   export type CreateTransactionInput = CreateTransactionInputBase &
     (CreateTransactionCreditCartInput | CreateTransactionBoletoInput);
   
+  export type CreateSubscriptionInput = CreateTransactionInput & {
+    plan_id: string
+  }
+  
   type PaymentMethod =
     | 'credit_card'
     | 'boleto';
@@ -657,8 +661,8 @@ declare module 'pagarme' {
     | 'chargedback'
     | 'analyzing'
     | 'pending_review';
-
-  interface Transaction {
+  
+  export type TransactionBase = {
     /** Nome do tipo do objeto criado/modificado. */
     object: 'transaction';
     /** Representa o estado da transação. A cada atualização no processamento da transação, esta propriedade é alterada e, caso você esteja usando uma postback_url, os seus servidores são notificados desses updates. */
@@ -667,12 +671,10 @@ declare module 'pagarme' {
     refuse_reason?: RefuseStatus;
     /** Agente responsável pela validação ou anulação da transação. */
     status_reason: RefuseStatus;
-    /** Adquirente responsável pelo processamento da transação. */
-    acquirer_name: 'development' | 'pagarme' | 'stone' | 'cielo' | 'rede';
-    /** ID da adquirente responsável pelo processamento da transação. */
-    acquirer_id: string;
     /** Mensagem de resposta da adquirente referente ao status da transação. */
     acquirer_response_code: string;
+    /** Adquirente responsável pelo processamento da transação. */
+    acquirer_name: 'development' | 'pagarme' | 'stone' | 'cielo' | 'rede';
     /** Código de autorização retornado pela bandeira. */
     authorization_code: string;
     /** Texto que irá aparecer na fatura do cliente depois do nome da loja. */
@@ -687,12 +689,6 @@ declare module 'pagarme' {
     date_updated: string;
     /** Valor, em centavos, da transação. Ex: 100,00 = 10000 */
     amount: number;
-    /** Valor em centavos autorizado na transação, sempre menor ou igual a `amount`. */
-    authorized_amount: number;
-    /** Valor em centavos capturado na transação, sempre menor ou igual a `authorized_amount`. */
-    paid_amount: number;
-    /** Valor em centavos estornado até o momento na transação, sempre menor ou igual a `paidamount`. */
-    refunded_amount: number;
     /** Número de parcelas a serem cobradas. */
     installments: number;
     /** Número identificador da transação */
@@ -707,14 +703,10 @@ declare module 'pagarme' {
     card_first_digits: string;
     /** Bandeira do cartão. */
     card_brand: string;
-    /** Usado em transações EMV, define se a validação do cartão aconteceu online(com banco emissor), ou offline( através do chip). */
-    card_pin_mode: string;
     /** URL (endpoint) de seu sistema que recebe notificações a cada mudança no status da transação. */
     postback_url: string;
     /** Método de pagamento */
-    payment_method: 'credit_card' | 'boleto';
-    /** Define qual foi a forma de captura dos dados de pagamento. */
-    capture_method: 'magstripe' | 'emv' | 'ecommerce';
+    payment_method: PaymentMethod;
     /** Define qual foi a nota de antifraude atribuída a transação. Lembrando que por padrão, transações com score >= 95 são recusadas. */
     antifraud_score: string;
     /** URL do boleto para impressão */
@@ -727,16 +719,32 @@ declare module 'pagarme' {
     referer: string;
     /** IP de origem que criou a transação, podendo ser diretamente de seu cliente, caso a requisição venha diretamente do client-side, ou de seus servidores, caso tudo esteja centralizando em sua aplicação no server-side. */
     ip: string;
+    /** Objeto com dados adicionais informados na criação da transação. */
+    metadata: any;
     /** Caso essa transação tenha sido originada na cobrança de uma assinatura, o id desta será o valor dessa propriedade. */
     subscription_id: string;
+  }
+  
+  interface Transaction extends TransactionBase {
+    /** ID da adquirente responsável pelo processamento da transação. */
+    acquirer_id: string;
+    /** Valor em centavos autorizado na transação, sempre menor ou igual a `amount`. */
+    authorized_amount: number;
+    /** Valor em centavos capturado na transação, sempre menor ou igual a `authorized_amount`. */
+    paid_amount: number;
+    /** Valor em centavos estornado até o momento na transação, sempre menor ou igual a `paidamount`. */
+    refunded_amount: number;
+    /** Usado em transações EMV, define se a validação do cartão aconteceu online(com banco emissor), ou offline( através do chip). */
+    card_pin_mode: string;
+    /** Define qual foi a forma de captura dos dados de pagamento. */
+    capture_method: 'magstripe' | 'emv' | 'ecommerce';
     customer: CustomerInput;
     billing: BillingInput;
     shipping: ShippingInput;
     items: ItemInput[];
     address: Address;
     documents: Document[];
-    /** Objeto com dados adicionais informados na criação da transação. */
-    metadata: any;
+    
     /** Objeto com as regras de split definidas para essa transação. */
     split_rules: any;
     /** Objeto com dados usados na integração com antifraude. */
@@ -746,6 +754,7 @@ declare module 'pagarme' {
     /** Valor único que identifica a transação para permitir uma nova tentativa de requisição com a segurança de que a mesma operação não será executada duas vezes acidentalmente. */
     reference_key: string;
   }
+  
   // TODO: Atualizar tipagem transaction | subscription
   export interface Postback {
     /** ID da transação. */
@@ -873,6 +882,11 @@ declare module 'pagarme' {
     conta_dv: string;
     document_number: string;
     legal_name: string;
+    type?:
+      | 'conta_corrente'
+      | 'conta_poupanca'
+      | 'conta_corrente_conjunta'
+      | 'conta_poupanca_conjunta'
   }
 
   export interface ContaBancaria {
@@ -915,6 +929,7 @@ declare module 'pagarme' {
     automatic_anticipation_enabled?: string;
     postback_url?: string;
     register_information?: RegisterInformationInput;
+    bank_account?: CreateContaBancaria
   }
   type UpdateRecebedor = {
     recipient_id: string;
@@ -1082,7 +1097,77 @@ declare module 'pagarme' {
     start_date?: number;
     end_date?: number;
   }
-  enum Country {
+  
+  export interface CreatePlanInput {
+    /** Valor que será cobrado recorrentemente (em centavos). Ex: R$49,90 = 4990*/
+    amount: number;
+    /** Nome do plano */
+    name: string
+    /** default: 0	Dias para teste gratuito do produto. Valor começará a ser cobrado no dia trial_days + 1*/
+    trial_days?: number
+    /** Meios de pagamentos aceitos. Pode ser "boleto", "credit_card" ou ambos */
+    payment_methods: PaymentMethod[]
+    /** Armazena o valor de uma cor para o plano */
+    color?: string
+    /** Prazo, em dias, para cobrança das parcelas */
+    days: string;
+    /** Número de cobranças que poderão ser feitas nesse plano. Ex: Plano cobrado 1x por ano, válido por no máximo 3 anos. Nesse caso, nossos parâmetros serão: days = 365, installments = 1, charges=2 (cartão de crédito) ou charges=3 (boleto). OBS: No caso de cartão de crédito, a cobrança feita na ativação da assinatura não é considerada. OBS: null irá cobrar o usuário indefinidamente, ou até o plano ser cancelado */
+    charges?: string
+    /** Número de parcelas entre cada cobrança (charges). Ex: Plano anual, válido por 2 anos, sendo que cada transação será dividida em 12 vezes. Nesse caso, nossos parâmetros serão: days = 365, installments = 12, charges=2 (cartão de crédito) ou charges=3 (boleto). OBS: Boleto sempre terá installments = 1 */
+    installments?: string
+    /** Define em até quantos dias antes o cliente será avisado sobre o vencimento do boleto. */
+    invoice_reminder?: number
+  }
+  
+  export interface CardCreateInput {
+    card_holder_name: string
+    card_expiration_date: string
+    card_number: string
+    card_cvv: string
+  }
+  
+  export interface Plan {
+    object: 'plan'
+    id: number
+    amount: number
+    days: number
+    name: string
+    trial_days: number
+    date_created:string
+    payment_methods:PaymentMethod[]
+    charges: number
+    installments: number
+    invoice_reminder: number
+  }
+  
+  export interface Subscription {
+    object: 'subscription'
+    id: number
+    plan: Plan
+    current_transaction: TransactionBase
+    customer: Customer
+    address: Address
+    phone: PhoneNumber
+    card:any
+    metadata: any
+  
+    postback_url: string
+    payment_method: PaymentMethod
+    current_period_start?:string
+    current_period_end?: string
+    charges: number
+    status:
+      | 'trialing'
+      | 'paid'
+      | 'pending_payment'
+      | 'unpaid'
+      | 'canceled'
+      | 'ended'
+    date_created: string
+    
+  }
+  
+  export enum Country {
     Af = 'AF',
     Al = 'AL',
     Dz = 'DZ',
@@ -1326,5 +1411,19 @@ declare module 'pagarme' {
     Ye = 'YE',
     Zm = 'ZM',
     Zw = 'ZW'
+  }
+  
+  export interface RequestError {
+    name: string
+    method: string
+    url: string
+    status: number
+    response: {
+      errors: {
+        type: string
+        parameter_name: string
+        message: string
+      }[]
+    }
   }
 }
