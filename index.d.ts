@@ -635,8 +635,46 @@ declare module 'pagarme' {
   export type CreateTransactionInput = CreateTransactionInputBase &
     (CreateTransactionCreditCartInput | CreateTransactionBoletoInput);
   
-  export type CreateSubscriptionInput = CreateTransactionInput & {
+  export interface CreateSubscriptionInput {
     plan_id: string
+    payment_method?: PaymentMethod
+    card_hash?: string
+    card_number?: string
+    card_cvv?: string
+    card_holder_name?: string
+    card_expiration_date?: string
+    card_id?: string
+    soft_descriptor?: string
+    postback_url?: string
+    customer: SubscriptionCustomerInput
+    metadata?: any
+    reference_key?: string
+    split_rules?: {
+      recipient_id: string
+      liable: boolean
+      charge_processing_fee: boolean
+      percentage?: string
+      amount?: string
+      charge_remainder_fee: boolean
+    }[]
+    boleto_fine?: {
+      days: string
+      amount: string
+    }
+    boleto_interest?: {
+      days: string
+      amount: string
+    }
+  }
+  
+  export interface SubscriptionCustomerInput {
+    email: string
+    name: string
+    document_number: string
+    address: Address
+    phone: PhoneNumber
+    gender?: string
+    born_at?: string
   }
   
   type PaymentMethod =
@@ -905,7 +943,7 @@ declare module 'pagarme' {
     date_created: Date;
   }
 
-  export interface PhoneNumber {
+  export interface CreateSubscriptionInputPhoneNumber {
     ddd: string;
     number: string;
     type: string;
@@ -1120,10 +1158,12 @@ declare module 'pagarme' {
   }
   
   export interface CardCreateInput {
-    card_holder_name: string
-    card_expiration_date: string
-    card_number: string
-    card_cvv: string
+    card_number?: string
+    card_expiration_date?: string
+    card_holder_name?: string
+    card_cvv?: string
+    card_hash?: string
+    customer_id?: string
   }
   
   export interface Plan {
@@ -1165,6 +1205,12 @@ declare module 'pagarme' {
       | 'ended'
     date_created: string
     
+  }
+  
+  export interface PhoneNumber {
+    ddd: string
+    number: string
+    type: string
   }
   
   export type Country = string
