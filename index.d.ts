@@ -762,6 +762,8 @@ declare module 'pagarme' {
     boleto_expiration_date: string;
     /** Data de expiração do boleto (em ISODate) */
     pix_expiration_date: string;
+    /** Dados para gerar o QRCode */
+    pix_qr_code: string;
     /** Mostra se a transação foi criada utilizando a API Key ou Encryption Key */
     referer: string;
     /** IP de origem que criou a transação, podendo ser diretamente de seu cliente, caso a requisição venha diretamente do client-side, ou de seus servidores, caso tudo esteja centralizando em sua aplicação no server-side. */
