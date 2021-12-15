@@ -108,7 +108,7 @@ declare module 'pagarme' {
     namespace cards {
       function all(opts: any, pagination: any): any;
 
-      function create(body:CardCreateInput): any;
+      function create(body: CardCreateInput): any;
 
       function find(opts: any, body: any): any;
     }
@@ -561,7 +561,6 @@ declare module 'pagarme' {
     };
     /** Prazo limite para pagamento do boleto. Deve ser passado no formato yyyy-MM-dd.Default: data atual + 7 dias */
     boleto_expiration_date?: string;
-
     /** Campo instruções do boleto. Máximo de 255 caracteres */
     boleto_instructions?: string;
   }
@@ -635,59 +634,60 @@ declare module 'pagarme' {
     /** Data e hora do dispositivo que está efetuando a transação. Deve ser enviado no seguinte formato: yyyy-MM-dd'T'HH:mm:ss'Z. Por exemplo: 2017-10-31T14:53:00.000Z. OBS.: este campo é necessário para transações de mundo físico (com método de captura EMV e Magstripe) */
     local_time?: string;
     /** Método de pagamento da transação. Aceita dois tipos: credit_card e boleto */
-    payment_method?: PaymentMethod
-    
+    payment_method?: PaymentMethod;
   }
 
   export type CreateTransactionInput = CreateTransactionInputBase &
-    (CreateTransactionCreditCartInput | CreateTransactionBoletoInput | CreateTransactionPixInput);
-  
+    (
+      | CreateTransactionCreditCartInput
+      | CreateTransactionBoletoInput
+      | CreateTransactionPixInput
+    );
+
   export interface CreateSubscriptionInput {
-    plan_id: string
-    payment_method?: PaymentMethod
-    card_hash?: string
-    card_number?: string
-    card_cvv?: string
-    card_holder_name?: string
-    card_expiration_date?: string
-    card_id?: string
-    soft_descriptor?: string
-    postback_url?: string
-    customer: SubscriptionCustomerInput
-    metadata?: any
-    reference_key?: string
+    plan_id: string;
+    payment_method?: PaymentMethod;
+    card_hash?: string;
+    card_number?: string;
+    card_cvv?: string;
+    card_holder_name?: string;
+    card_expiration_date?: string;
+    card_id?: string;
+    soft_descriptor?: string;
+    postback_url?: string;
+    customer: SubscriptionCustomerInput;
+    metadata?: any;
+    reference_key?: string;
     split_rules?: {
-      recipient_id: string
-      liable: boolean
-      charge_processing_fee: boolean
-      percentage?: string
-      amount?: string
-      charge_remainder_fee: boolean
-    }[]
+      recipient_id: string;
+      liable: boolean;
+      charge_processing_fee: boolean;
+      percentage?: string;
+      amount?: string;
+      charge_remainder_fee: boolean;
+    }[];
     boleto_fine?: {
-      days: string
-      amount: string
-    }
+      days: string;
+      amount: string;
+    };
     boleto_interest?: {
-      days: string
-      amount: string
-    }
+      days: string;
+      amount: string;
+    };
   }
-  
+
   export interface SubscriptionCustomerInput {
-    email: string
-    name: string
-    document_number: string
-    address: Address
-    phone: PhoneNumber
-    gender?: string
-    born_at?: string
+    email: string;
+    name: string;
+    document_number: string;
+    address: Address;
+    phone: PhoneNumber;
+    gender?: string;
+    born_at?: string;
   }
-  
-  type PaymentMethod =
-    | 'credit_card'
-    | 'boleto';
-  
+
+  type PaymentMethod = 'credit_card' | 'boleto' | 'pix';
+
   type RefuseStatus =
     | 'acquirer'
     | 'antifraud'
@@ -706,7 +706,7 @@ declare module 'pagarme' {
     | 'chargedback'
     | 'analyzing'
     | 'pending_review';
-  
+
   export type TransactionBase = {
     /** Nome do tipo do objeto criado/modificado. */
     object: 'transaction';
@@ -770,8 +770,8 @@ declare module 'pagarme' {
     metadata: any;
     /** Caso essa transação tenha sido originada na cobrança de uma assinatura, o id desta será o valor dessa propriedade. */
     subscription_id: string;
-  }
-  
+  };
+
   interface Transaction extends TransactionBase {
     /** ID da adquirente responsável pelo processamento da transação. */
     acquirer_id: string;
@@ -791,7 +791,7 @@ declare module 'pagarme' {
     items: ItemInput[];
     address: Address;
     documents: Document[];
-    
+
     /** Objeto com as regras de split definidas para essa transação. */
     split_rules: any;
     /** Objeto com dados usados na integração com antifraude. */
@@ -801,7 +801,7 @@ declare module 'pagarme' {
     /** Valor único que identifica a transação para permitir uma nova tentativa de requisição com a segurança de que a mesma operação não será executada duas vezes acidentalmente. */
     reference_key: string;
   }
-  
+
   // TODO: Atualizar tipagem transaction | subscription
   export interface Postback {
     /** ID da transação. */
@@ -933,7 +933,7 @@ declare module 'pagarme' {
       | 'conta_corrente'
       | 'conta_poupanca'
       | 'conta_corrente_conjunta'
-      | 'conta_poupanca_conjunta'
+      | 'conta_poupanca_conjunta';
   }
 
   export interface ContaBancaria {
@@ -976,7 +976,7 @@ declare module 'pagarme' {
     automatic_anticipation_enabled?: string;
     postback_url?: string;
     register_information?: RegisterInformationInput;
-    bank_account?: CreateContaBancaria
+    bank_account?: CreateContaBancaria;
   }
   type UpdateRecebedor = {
     recipient_id: string;
@@ -1144,85 +1144,84 @@ declare module 'pagarme' {
     start_date?: number;
     end_date?: number;
   }
-  
+
   export interface CreatePlanInput {
     /** Valor que será cobrado recorrentemente (em centavos). Ex: R$49,90 = 4990*/
     amount: number;
     /** Nome do plano */
-    name: string
+    name: string;
     /** default: 0	Dias para teste gratuito do produto. Valor começará a ser cobrado no dia trial_days + 1*/
-    trial_days?: number
+    trial_days?: number;
     /** Meios de pagamentos aceitos. Pode ser "boleto", "credit_card" ou ambos */
-    payment_methods: PaymentMethod[]
+    payment_methods: PaymentMethod[];
     /** Armazena o valor de uma cor para o plano */
-    color?: string
+    color?: string;
     /** Prazo, em dias, para cobrança das parcelas */
     days: string;
     /** Número de cobranças que poderão ser feitas nesse plano. Ex: Plano cobrado 1x por ano, válido por no máximo 3 anos. Nesse caso, nossos parâmetros serão: days = 365, installments = 1, charges=2 (cartão de crédito) ou charges=3 (boleto). OBS: No caso de cartão de crédito, a cobrança feita na ativação da assinatura não é considerada. OBS: null irá cobrar o usuário indefinidamente, ou até o plano ser cancelado */
-    charges?: string
+    charges?: string;
     /** Número de parcelas entre cada cobrança (charges). Ex: Plano anual, válido por 2 anos, sendo que cada transação será dividida em 12 vezes. Nesse caso, nossos parâmetros serão: days = 365, installments = 12, charges=2 (cartão de crédito) ou charges=3 (boleto). OBS: Boleto sempre terá installments = 1 */
-    installments?: string
+    installments?: string;
     /** Define em até quantos dias antes o cliente será avisado sobre o vencimento do boleto. */
-    invoice_reminder?: number
+    invoice_reminder?: number;
   }
-  
+
   export interface CardCreateInput {
-    card_number?: string
-    card_expiration_date?: string
-    card_holder_name?: string
-    card_cvv?: string
-    card_hash?: string
-    customer_id?: string
+    card_number?: string;
+    card_expiration_date?: string;
+    card_holder_name?: string;
+    card_cvv?: string;
+    card_hash?: string;
+    customer_id?: string;
   }
-  
+
   export interface Plan {
-    object: 'plan'
-    id: number
-    amount: number
-    days: number
-    name: string
-    trial_days: number
-    date_created:string
-    payment_methods:PaymentMethod[]
-    charges: number
-    installments: number
-    invoice_reminder: number
+    object: 'plan';
+    id: number;
+    amount: number;
+    days: number;
+    name: string;
+    trial_days: number;
+    date_created: string;
+    payment_methods: PaymentMethod[];
+    charges: number;
+    installments: number;
+    invoice_reminder: number;
   }
-  
+
   export interface Subscription {
-    object: 'subscription'
-    id: number
-    plan: Plan
-    current_transaction: TransactionBase
-    customer: Customer
-    address: Address
-    phone: PhoneNumber
-    card:any
-    metadata: any
-  
-    postback_url: string
-    payment_method: PaymentMethod
-    current_period_start?:string
-    current_period_end?: string
-    charges: number
+    object: 'subscription';
+    id: number;
+    plan: Plan;
+    current_transaction: TransactionBase;
+    customer: Customer;
+    address: Address;
+    phone: PhoneNumber;
+    card: any;
+    metadata: any;
+
+    postback_url: string;
+    payment_method: PaymentMethod;
+    current_period_start?: string;
+    current_period_end?: string;
+    charges: number;
     status:
       | 'trialing'
       | 'paid'
       | 'pending_payment'
       | 'unpaid'
       | 'canceled'
-      | 'ended'
-    date_created: string
-    
+      | 'ended';
+    date_created: string;
   }
-  
+
   export interface PhoneNumber {
-    ddd: string
-    number: string
-    type: string
+    ddd: string;
+    number: string;
+    type: string;
   }
-  
-  export type Country = string
+
+  export type Country = string;
   /*{
     Af = 'AF',
     Al = 'AL',
@@ -1468,18 +1467,18 @@ declare module 'pagarme' {
     Zm = 'ZM',
     Zw = 'ZW'
   }*/
-  
+
   export interface RequestError {
-    name: string
-    method: string
-    url: string
-    status: number
+    name: string;
+    method: string;
+    url: string;
+    status: number;
     response: {
       errors: {
-        type: string
-        parameter_name: string
-        message: string
-      }[]
-    }
+        type: string;
+        parameter_name: string;
+        message: string;
+      }[];
+    };
   }
 }
