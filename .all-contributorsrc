@@ -21,7 +21,76 @@
       "profile": "https://github.com/jonyw4",
       "contributions": [
         "code",
+        "doc",
+        "review",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "mrlmaia",
+      "name": "Murilo Maia",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/56596799?v=4",
+      "profile": "https://github.com/mrlmaia",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "italodeandra",
+      "name": "Ítalo Andrade",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/19225266?v=4",
+      "profile": "https://italodeandra.de",
+      "contributions": [
+        "code",
         "doc"
+      ]
+    },
+    {
+      "login": "outerlook",
+      "name": "Raffael Campos",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12937160?v=4",
+      "profile": "https://github.com/outerlook",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "rodrigovenancioverissimo",
+      "name": "Rodrigo Venâncio Veríssimo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17599326?v=4",
+      "profile": "https://www.linkedin.com/in/rodrigo-ven%C3%A2ncio-ver%C3%ADssimo-b90495a7/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "abrantesarthur",
+      "name": "Arthur Abrantes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12059676?v=4",
+      "profile": "https://github.com/abrantesarthur",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "sidinei-silva",
+      "name": "Sidinei Silva",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20242151?v=4",
+      "profile": "https://github.com/sidinei-silva",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "igorsilva3",
+      "name": "Igor Silva",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48392942?v=4",
+      "profile": "https://github.com/igorsilva3",
+      "contributions": [
+        "code"
       ]
     }
   ],
